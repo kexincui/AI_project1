@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 from scipy.interpolate import griddata
 
 # Load data from CSV
-dat = np.genfromtxt('heatmap_1.txt', delimiter=' ',skip_header=0)
+dat = np.genfromtxt('heatmap_2.txt', delimiter=' ',skip_header=0)
 X_dat = dat[:,0]
 Y_dat = dat[:,1]
 Z_dat = dat[:,2]
@@ -31,3 +31,22 @@ plt.colorbar()
 plt.show()
 #################################################
 
+
+##################Bounding Area#####################
+
+#finding Xmin . where X,Y,Z are the points and probability resp
+nonzeroCoor_X = []
+nonzeroCoor_Y = []
+for i in range(len(Z)):
+	if Z[i] > 0:
+		nonzeroCoor_X.append(X[i])
+		nonzeroCoor_Y.append(Y[i])
+
+# The area is Xmin, Xmax, Ymin, Ymax
+bounding_area = []
+bounding_area.append(min(nonzeroCoor_X))
+bounding_area.append(max(nonzeroCoor_X))
+bounding_area.append(min(nonzeroCoor_Y))
+bounding_area.append(max(nonzeroCoor_Y))
+
+print(bounding_area)
