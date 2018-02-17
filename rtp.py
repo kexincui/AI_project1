@@ -76,15 +76,14 @@ if ((Xmax-Xmin)%2==0):
 else: 
 	Yend = Ymin
 up = True
+
+
 def search_path(startx,starty,up):
 	if (up==True):# drone going up
 		while(starty <= Ymax):
 			search_path_X.append(startx)
 			search_path_Y.append(starty)
 			starty += 1
-			# plt.scatter(startx,starty)
-			# plt.show()
-			# plt.pause(0.00000000000001)
 		starty -= 1
 		startx += 1
 		up = False
@@ -92,20 +91,18 @@ def search_path(startx,starty,up):
 		while(starty >= Ymin):
 			search_path_X.append(startx)
 			search_path_Y.append(starty)
-			# plt.scatter(startx,starty)
-			# plt.show()
-			# plt.pause(0.00000000000001)
+			
 			starty -= 1
-
 		starty += 1
 		startx += 1
 		up = True
-	if (startx==Xmax):
-
+	if (starty == Yend):
+		return
 	search_path(startx,starty,up)
 
 # print(search_path_Y)
 
 search_path(Xmin,Ymin,up)
+
 plt.scatter(search_path_X,search_path_Y)
 plt.show()
