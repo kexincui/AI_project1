@@ -53,7 +53,7 @@ bounding_area.append(Xmax)
 bounding_area.append(Ymin)
 bounding_area.append(Ymax)
 
-# print(bounding_area)
+print(bounding_area)
 #################################################
 
 
@@ -61,10 +61,10 @@ bounding_area.append(Ymax)
 search_path_X = [0]
 search_path_Y = [0]
 
-for j in range(int(Xmin),int(Xmax)+1):
-	for i in range(int(Ymin),int(Ymax)+1):
-		search_path_X.append(j)
-		search_path_Y.append(i)
+# for j in range(int(Xmin),int(Xmax)+1):
+# 	for i in range(int(Ymin),int(Ymax)+1):
+# 		search_path_X.append(j)
+# 		search_path_Y.append(i)
 
 
 # print(search_path_Y)
@@ -76,15 +76,40 @@ if ((Xmax-Xmin)%2==0):
 else: 
 	Yend = Ymin
 up = True
+
+# print(Xmax)
+# print(Ymax)
+
+startx=Xmin
+starty=Ymin
+
+# while(True):
+# 	if (startx==Xmax and starty==Yend):
+# 		break
+# 	while(starty <= Ymax):
+# 		starty += 1
+# 		plt.scatter(startx,starty)
+# 		plt.show()
+# 		plt.pause(0.0001)
+# 	starty -= 1
+# 	startx += 1
+# 	while(starty >= Ymin):
+# 		starty -= 1
+# 		plt.scatter(startx,starty)
+# 		plt.show()
+# 		plt.pause(0.0001)
+# 	starty += 1
+# 	startx += 1
+
 def search_path(startx,starty,up):
-	if (up==True):# drone going up
+	if (up is True):# drone going up
 		while(starty <= Ymax):
 			search_path_X.append(startx)
 			search_path_Y.append(starty)
 			starty += 1
 			# plt.scatter(startx,starty)
 			# plt.show()
-			# plt.pause(0.00000000000001)
+			# plt.pause(0.0001)
 		starty -= 1
 		startx += 1
 		up = False
@@ -94,14 +119,14 @@ def search_path(startx,starty,up):
 			search_path_Y.append(starty)
 			# plt.scatter(startx,starty)
 			# plt.show()
-			# plt.pause(0.00000000000001)
+			# plt.pause(0.0001)
 			starty -= 1
 
 		starty += 1
 		startx += 1
 		up = True
 	if (startx==Xmax):
-
+		return
 	search_path(startx,starty,up)
 
 # print(search_path_Y)
