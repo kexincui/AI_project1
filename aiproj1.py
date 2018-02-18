@@ -55,7 +55,7 @@ bounding_area.append(Xmax)
 bounding_area.append(Ymin)
 bounding_area.append(Ymax)
 
-print(bounding_area)
+# print(bounding_area)
 #################################################
 
 
@@ -78,17 +78,15 @@ else:
 up = True
 
 plt.ion()
-
 def search_path(startx,starty,up,Z):
 	if (up is True):# drone going up
 		while(starty <= Ymax):
 			search_path_X.append(startx)
 			search_path_Y.append(starty)
-			probability+=
 			starty += 1
-			plt.scatter(startx,starty)
-			plt.show()
-			plt.pause(0.0001)
+			# plt.scatter(startx,starty)
+			# plt.show()
+			# plt.pause(0.0001)
 		starty -= 1
 		startx += 1
 		up = False
@@ -96,9 +94,9 @@ def search_path(startx,starty,up,Z):
 		while(starty >= Ymin):
 			search_path_X.append(startx)
 			search_path_Y.append(starty)
-			plt.scatter(startx,starty)
-			plt.show()
-			plt.pause(0.0001)
+			# plt.scatter(startx,starty)
+			# plt.show()
+			# plt.pause(0.0001)
 			starty -= 1
 
 		starty += 1
@@ -106,8 +104,53 @@ def search_path(startx,starty,up,Z):
 		up = True
 	if (startx==Xmax):
 		return
-	search_path(startx,starty,up)
+	search_path(startx,starty,up,Z)
 
 
 search_path(Xmin,Ymin,up,Z)
+
+final_search_path = np.column_stack((search_path_X, search_path_Y))
 #################################################
+
+
+##################CDP#####################
+X = np.array(X)
+Y = np.array(Y)
+xycoordinates = np.column_stack((X, Y))
+xy_p = np.column_stack((xycoordinates, Z))
+# dictionary = dict(zip(xycoordinates, Z))
+
+newdata = [dict(zip(seq, Z)) for seq in xycoordinates]
+print(newdata[0])
+
+for xycord, prob in newdata.iteritems():    # for name, age in list.items():  (for Python 3.x)
+    if prob == 0:
+        print xycord
+
+# n_items = take(5, dictionary.items())
+# print (n_items)
+# print(xy_p[2])
+
+def finding_cdp(xy_p,up):
+	if (up is True):# drone going up
+		while(starty <= Ymax):
+			search_path_X.append(startx)
+			search_path_Y.append(starty)
+			starty += 1
+		starty -= 1
+		startx += 1
+		up = False
+	else:
+		while(starty >= Ymin):
+			search_path_X.append(startx)
+			search_path_Y.append(starty)
+			starty -= 1
+
+		starty += 1
+		startx += 1
+		up = True
+	if (startx==Xmax):
+		return
+	search_path(startx,starty,up,Z)
+
+##############################################
