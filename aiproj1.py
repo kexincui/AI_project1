@@ -37,10 +37,12 @@ zi = griddata((X, Y), Z, (xi[None,:], yi[:,None]), method='nearest')
 #finding Xmin . where X,Y,Z are the points and probability resp
 nonzeroCoor_X = []
 nonzeroCoor_Y = []
+nonzeroProb_Z = []
 for i in range(len(Z)):
 	if Z[i] > 0:
 		nonzeroCoor_X.append(X[i])
 		nonzeroCoor_Y.append(Y[i])
+		nonzeroProb_Z.append(Z[i])
 
 # The area is Xmin, Xmax, Ymin, Ymax
 bounding_area = []
@@ -100,13 +102,15 @@ starty=Ymin
 # 		plt.pause(0.0001)
 # 	starty += 1
 # 	startx += 1
+
 plt.ion()
 
-def search_path(startx,starty,up):
+def search_path(startx,starty,up,Z):
 	if (up is True):# drone going up
 		while(starty <= Ymax):
 			search_path_X.append(startx)
 			search_path_Y.append(starty)
+			probability+=
 			starty += 1
 			plt.scatter(startx,starty)
 			plt.show()
@@ -132,6 +136,6 @@ def search_path(startx,starty,up):
 
 # print(search_path_Y)
 
-search_path(Xmin,Ymin,up)
+search_path(Xmin,Ymin,up,Z)
 # plt.scatter(search_path_X,search_path_Y)
 # plt.show()
