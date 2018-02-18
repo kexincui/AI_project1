@@ -100,6 +100,7 @@ starty=Ymin
 # 		plt.pause(0.0001)
 # 	starty += 1
 # 	startx += 1
+plt.ion()
 
 def search_path(startx,starty,up):
 	if (up is True):# drone going up
@@ -107,9 +108,9 @@ def search_path(startx,starty,up):
 			search_path_X.append(startx)
 			search_path_Y.append(starty)
 			starty += 1
-			# plt.scatter(startx,starty)
-			# plt.show()
-			# plt.pause(0.0001)
+			plt.scatter(startx,starty)
+			plt.show()
+			plt.pause(0.0001)
 		starty -= 1
 		startx += 1
 		up = False
@@ -117,9 +118,9 @@ def search_path(startx,starty,up):
 		while(starty >= Ymin):
 			search_path_X.append(startx)
 			search_path_Y.append(starty)
-			# plt.scatter(startx,starty)
-			# plt.show()
-			# plt.pause(0.0001)
+			plt.scatter(startx,starty)
+			plt.show()
+			plt.pause(0.0001)
 			starty -= 1
 
 		starty += 1
@@ -132,5 +133,5 @@ def search_path(startx,starty,up):
 # print(search_path_Y)
 
 search_path(Xmin,Ymin,up)
-plt.scatter(search_path_X,search_path_Y)
-plt.show()
+# plt.scatter(search_path_X,search_path_Y)
+# plt.show()
