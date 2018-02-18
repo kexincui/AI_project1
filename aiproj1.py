@@ -59,6 +59,9 @@ print(bounding_area)
 #################################################
 
 
+
+
+
 ##################Search Algorithm#####################
 search_path_X = [0]
 search_path_Y = [0]
@@ -68,40 +71,11 @@ search_path_Y = [0]
 # 		search_path_X.append(j)
 # 		search_path_Y.append(i)
 
-
-# print(search_path_Y)
-# startx=Xmin
-# starty=Ymin
-# 'Yes' if fruit == 'Apple' else 'No'
 if ((Xmax-Xmin)%2==0):
 	Yend = Ymax 
 else: 
 	Yend = Ymin
 up = True
-
-# print(Xmax)
-# print(Ymax)
-
-startx=Xmin
-starty=Ymin
-
-# while(True):
-# 	if (startx==Xmax and starty==Yend):
-# 		break
-# 	while(starty <= Ymax):
-# 		starty += 1
-# 		plt.scatter(startx,starty)
-# 		plt.show()
-# 		plt.pause(0.0001)
-# 	starty -= 1
-# 	startx += 1
-# 	while(starty >= Ymin):
-# 		starty -= 1
-# 		plt.scatter(startx,starty)
-# 		plt.show()
-# 		plt.pause(0.0001)
-# 	starty += 1
-# 	startx += 1
 
 plt.ion()
 
@@ -134,8 +108,6 @@ def search_path(startx,starty,up,Z):
 		return
 	search_path(startx,starty,up)
 
-# print(search_path_Y)
 
 search_path(Xmin,Ymin,up,Z)
-# plt.scatter(search_path_X,search_path_Y)
-# plt.show()
+#################################################
