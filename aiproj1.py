@@ -110,7 +110,11 @@ def search_path(startx,starty,up,Z):
 search_path(Xmin,Ymin,up,Z)
 
 final_search_path = np.column_stack((search_path_X, search_path_Y))
+
+search_path_XY = np.column_stack((search_path_X, search_path_Y))
+
 #################################################
+
 
 
 ##################CDP#####################
@@ -124,7 +128,6 @@ xy_p = np.column_stack((xycoordinates, Z))
 
 # creating a 2d list with non zero probabilities
 nonzero_xy_p = xy_p[xy_p[:, 2] != 0.0]
-print (nonzero_xy_p)
 
 
 final_prob=0
