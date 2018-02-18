@@ -37,12 +37,10 @@ zi = griddata((X, Y), Z, (xi[None,:], yi[:,None]), method='nearest')
 #finding Xmin . where X,Y,Z are the points and probability resp
 nonzeroCoor_X = []
 nonzeroCoor_Y = []
-nonzeroProb_Z = []
 for i in range(len(Z)):
 	if Z[i] > 0:
 		nonzeroCoor_X.append(X[i])
 		nonzeroCoor_Y.append(Y[i])
-		nonzeroProb_Z.append(Z[i])
 
 # The area is Xmin, Xmax, Ymin, Ymax
 bounding_area = []
@@ -55,40 +53,37 @@ bounding_area.append(Xmax)
 bounding_area.append(Ymin)
 bounding_area.append(Ymax)
 
-print(bounding_area)
+# print(bounding_area)
 #################################################
-
-
-
 
 
 ##################Search Algorithm#####################
 search_path_X = [0]
 search_path_Y = [0]
 
-# for j in range(int(Xmin),int(Xmax)+1):
-# 	for i in range(int(Ymin),int(Ymax)+1):
-# 		search_path_X.append(j)
-# 		search_path_Y.append(i)
+for j in range(int(Xmin),int(Xmax)+1):
+	for i in range(int(Ymin),int(Ymax)+1):
+		search_path_X.append(j)
+		search_path_Y.append(i)
 
+
+# print(search_path_Y)
+# startx=Xmin
+# starty=Ymin
+# 'Yes' if fruit == 'Apple' else 'No'
 if ((Xmax-Xmin)%2==0):
 	Yend = Ymax 
 else: 
 	Yend = Ymin
 up = True
 
-plt.ion()
 
-def search_path(startx,starty,up,Z):
-	if (up is True):# drone going up
+def search_path(startx,starty,up):
+	if (up==True):# drone going up
 		while(starty <= Ymax):
 			search_path_X.append(startx)
 			search_path_Y.append(starty)
-			probability+=
 			starty += 1
-			plt.scatter(startx,starty)
-			plt.show()
-			plt.pause(0.0001)
 		starty -= 1
 		startx += 1
 		up = False
@@ -96,18 +91,18 @@ def search_path(startx,starty,up,Z):
 		while(starty >= Ymin):
 			search_path_X.append(startx)
 			search_path_Y.append(starty)
-			plt.scatter(startx,starty)
-			plt.show()
-			plt.pause(0.0001)
+			
 			starty -= 1
-
 		starty += 1
 		startx += 1
 		up = True
-	if (startx==Xmax):
+	if (starty == Yend):
 		return
 	search_path(startx,starty,up)
 
+# print(search_path_Y)
 
-search_path(Xmin,Ymin,up,Z)
-#################################################
+search_path(Xmin,Ymin,up)
+
+plt.scatter(search_path_X,search_path_Y)
+plt.show()
