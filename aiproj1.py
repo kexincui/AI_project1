@@ -1,7 +1,9 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.interpolate import griddata
-
+import numpy
+import pandas as pd
+# from pandas import dataframe  
 # Load data from CSV
 dat = np.genfromtxt('heatmap_2.txt', delimiter=' ',skip_header=0)
 X_dat = dat[:,0]
@@ -38,9 +40,11 @@ zi = griddata((X, Y), Z, (xi[None,:], yi[:,None]), method='nearest')
 nonzeroCoor_X = []
 nonzeroCoor_Y = []
 nonzeroProb_Z = []
+index = []
 for i in range(len(Z)):
 	if Z[i] > 0:
 		nonzeroCoor_X.append(X[i])
+		index.append(i)
 		nonzeroCoor_Y.append(Y[i])
 		nonzeroProb_Z.append(Z[i])
 
@@ -66,10 +70,6 @@ bounding_area.append(Ymax)
 search_path_X = [0]
 search_path_Y = [0]
 
-# for j in range(int(Xmin),int(Xmax)+1):
-# 	for i in range(int(Ymin),int(Ymax)+1):
-# 		search_path_X.append(j)
-# 		search_path_Y.append(i)
 
 if ((Xmax-Xmin)%2==0):
 	Yend = Ymax 
@@ -114,43 +114,54 @@ final_search_path = np.column_stack((search_path_X, search_path_Y))
 
 
 ##################CDP#####################
+
+
 X = np.array(X)
 Y = np.array(Y)
 xycoordinates = np.column_stack((X, Y))
 xy_p = np.column_stack((xycoordinates, Z))
-# dictionary = dict(zip(xycoordinates, Z))
 
-newdata = [dict(zip(seq, Z)) for seq in xycoordinates]
-print(newdata[0])
 
-for xycord, prob in newdata.iteritems():    # for name, age in list.items():  (for Python 3.x)
-    if prob == 0:
-        print xycord
+# creating a 2d list with non zero probabilities
+nonzero_xy_p = xy_p[xy_p[:, 2] != 0.0]
+print (nonzero_xy_p)
 
-# n_items = take(5, dictionary.items())
-# print (n_items)
-# print(xy_p[2])
 
-def finding_cdp(xy_p,up):
-	if (up is True):# drone going up
-		while(starty <= Ymax):
-			search_path_X.append(startx)
-			search_path_Y.append(starty)
-			starty += 1
-		starty -= 1
-		startx += 1
-		up = False
-	else:
-		while(starty >= Ymin):
-			search_path_X.append(startx)
-			search_path_Y.append(starty)
-			starty -= 1
+final_prob=0
+time = 1
+final_prob_arr = []
+time_arr =[]
 
-		starty += 1
-		startx += 1
-		up = True
-	if (startx==Xmax):
-		return
-	search_path(startx,starty,up,Z)
+def finding_cdp(nonzero_xy_p,final_prob_arr,time_arr,final_prob,time):
 
+	for i in range(len(nonzero_xy_p)):
+		final_prob += nonzero_xy_p[i][2]
+		time += 1
+		final_prob_arr.append(final_prob)
+		time_arr.append(time)
+
+finding_cdp(nonzero_xy_p,final_prob_arr,time_arr,final_prob,time)
+plt.scatter(time_arr,final_prob_arr)
+plt.show(block=True)
+
+	# if (up is True):# drone going up
+	# 	while(starty <= Ymax):
+	# 		starty += 1
+	# 	starty -= 1
+	# 	startx += 1
+	# 	up = False
+	# else:
+	# 	while(starty >= Ymin):
+	# 		search_path_X.append(startx)
+	# 		search_path_Y.append(starty)
+	# 		starty -= 1
+
+	# 	starty += 1
+	# 	startx += 1
+	# 	up = True
+	# if (startx==Xmax):
+	# 	return
+	# finding_cdp(nonzero_xy_p[0][0],starty[0][1],nonzero_xy_p,up,final_prob)
+
+# finding_cdp(mins_x,mins_y,xy_p,up)
 ##############################################
