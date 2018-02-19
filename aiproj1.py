@@ -5,7 +5,7 @@ import numpy
 import pandas as pd
 from pandas import DataFrame  
 # Load data from CSV
-dat = np.genfromtxt('heatmap_1.txt', delimiter=' ',skip_header=0)
+dat = np.genfromtxt('heatmap_2.txt', delimiter=' ',skip_header=0)
 X_dat = dat[:,0]
 Y_dat = dat[:,1]
 Z_dat = dat[:,2]
