@@ -3,9 +3,9 @@ import matplotlib.pyplot as plt
 from scipy.interpolate import griddata
 import numpy
 import pandas as pd
-# from pandas import dataframe  
+from pandas import DataFrame  
 # Load data from CSV
-dat = np.genfromtxt('heatmap_2.txt', delimiter=' ',skip_header=0)
+dat = np.genfromtxt('heatmap_1.txt', delimiter=' ',skip_header=0)
 X_dat = dat[:,0]
 Y_dat = dat[:,1]
 Z_dat = dat[:,2]
@@ -63,10 +63,25 @@ bounding_area.append(Ymax)
 #################################################
 
 
+X = np.array(X)
+Y = np.array(Y)
+xycoordinates = np.column_stack((X, Y))
+xy_p = np.column_stack((xycoordinates, Z))
 
+cord_prob = pd.DataFrame(
+    {'Xcoordinate': X,
+     'Ycoordinate': Y,
+     'Probability': Z
+    })
 
+##################Search Algorithm and CDP #####################
 
-##################Search Algorithm#####################
+final_prob=0
+time = 0
+
+final_prob_arr = []
+time_arr =[]
+
 search_path_X = [0]
 search_path_Y = [0]
 
@@ -77,13 +92,19 @@ else:
 	Yend = Ymin
 up = True
 
-plt.ion()
-def search_path(startx,starty,up,Z):
+# plt.ion()
+def search_path(startx,starty,up,cord_prob,time,final_prob,final_prob_arr,time_arr):
 	if (up is True):# drone going up
 		while(starty <= Ymax):
 			search_path_X.append(startx)
 			search_path_Y.append(starty)
+			#To get probability from XY coordinate in dataframe (from pandas)
+			probability_xy = cord_prob[((cord_prob['Xcoordinate'] == startx) & (cord_prob['Ycoordinate'] == starty))].iat[0,0]
 			starty += 1
+			final_prob += probability_xy
+			final_prob_arr.append(probability_xy)
+			time_arr.append(time)
+			time += 1
 			# plt.scatter(startx,starty)
 			# plt.show()
 			# plt.pause(0.0001)
@@ -94,77 +115,29 @@ def search_path(startx,starty,up,Z):
 		while(starty >= Ymin):
 			search_path_X.append(startx)
 			search_path_Y.append(starty)
+			probability_xy = cord_prob[((cord_prob['Xcoordinate'] == startx) & (cord_prob['Ycoordinate'] == starty))].iat[0,0]
+			starty -= 1
+			final_prob += probability_xy
+			final_prob_arr.append(final_prob)
+			time_arr.append(time)
+			time += 1
 			# plt.scatter(startx,starty)
 			# plt.show()
 			# plt.pause(0.0001)
-			starty -= 1
-
 		starty += 1
 		startx += 1
 		up = True
-	if (startx==Xmax):
+	if (startx > Xmax):
 		return
-	search_path(startx,starty,up,Z)
+	search_path(startx,starty,up,cord_prob,time,final_prob,final_prob_arr,time_arr)
 
 
-search_path(Xmin,Ymin,up,Z)
+search_path(Xmin,Ymin,up,cord_prob,time,final_prob,final_prob_arr,time_arr)
 
 final_search_path = np.column_stack((search_path_X, search_path_Y))
 
 search_path_XY = np.column_stack((search_path_X, search_path_Y))
 
-#################################################
-
-
-
-##################CDP#####################
-
-
-X = np.array(X)
-Y = np.array(Y)
-xycoordinates = np.column_stack((X, Y))
-xy_p = np.column_stack((xycoordinates, Z))
-
-
-# creating a 2d list with non zero probabilities
-nonzero_xy_p = xy_p[xy_p[:, 2] != 0.0]
-
-
-final_prob=0
-time = 1
-final_prob_arr = []
-time_arr =[]
-
-def finding_cdp(nonzero_xy_p,final_prob_arr,time_arr,final_prob,time):
-
-	for i in range(len(nonzero_xy_p)):
-		final_prob += nonzero_xy_p[i][2]
-		time += 1
-		final_prob_arr.append(final_prob)
-		time_arr.append(time)
-
-finding_cdp(nonzero_xy_p,final_prob_arr,time_arr,final_prob,time)
 plt.scatter(time_arr,final_prob_arr)
 plt.show(block=True)
-
-	# if (up is True):# drone going up
-	# 	while(starty <= Ymax):
-	# 		starty += 1
-	# 	starty -= 1
-	# 	startx += 1
-	# 	up = False
-	# else:
-	# 	while(starty >= Ymin):
-	# 		search_path_X.append(startx)
-	# 		search_path_Y.append(starty)
-	# 		starty -= 1
-
-	# 	starty += 1
-	# 	startx += 1
-	# 	up = True
-	# if (startx==Xmax):
-	# 	return
-	# finding_cdp(nonzero_xy_p[0][0],starty[0][1],nonzero_xy_p,up,final_prob)
-
-# finding_cdp(mins_x,mins_y,xy_p,up)
-##############################################
+#################################################
