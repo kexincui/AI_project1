@@ -102,9 +102,10 @@ def search_path(startx,starty,up,cord_prob,time,final_prob,final_prob_arr,time_a
 			probability_xy = cord_prob[((cord_prob['Xcoordinate'] == startx) & (cord_prob['Ycoordinate'] == starty))].iat[0,0]
 			starty += 1
 			final_prob += probability_xy
-			final_prob_arr.append(probability_xy)
-			time_arr.append(time)
 			time += 1
+			final_prob_arr.append(final_prob)
+			time_arr.append(time)
+
 			# plt.scatter(startx,starty)
 			# plt.show()
 			# plt.pause(0.0001)
@@ -118,9 +119,9 @@ def search_path(startx,starty,up,cord_prob,time,final_prob,final_prob_arr,time_a
 			probability_xy = cord_prob[((cord_prob['Xcoordinate'] == startx) & (cord_prob['Ycoordinate'] == starty))].iat[0,0]
 			starty -= 1
 			final_prob += probability_xy
+			time += 1
 			final_prob_arr.append(final_prob)
 			time_arr.append(time)
-			time += 1
 			# plt.scatter(startx,starty)
 			# plt.show()
 			# plt.pause(0.0001)
