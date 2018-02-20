@@ -3,7 +3,9 @@ import matplotlib.pyplot as plt
 from scipy.interpolate import griddata
 import numpy
 import pandas as pd
-from pandas import DataFrame  
+from pandas import DataFrame
+import math
+
 # Load data from CSV
 dat = np.genfromtxt('heatmap_2.txt', delimiter=' ',skip_header=0)
 X_dat = dat[:,0]
@@ -80,7 +82,7 @@ final_prob = 0
 final_prob_arr = [0]
 time_arr =[0]
 
-time = int((Xmin**2+Ymin**2)**0.5)
+time = ((Xmin**2+Ymin**2)**0.5)
 print("time is :",time)
 
 search_path_X = [0]
@@ -100,17 +102,12 @@ def search_path(startx,starty,up,cord_prob,time,final_prob,final_prob_arr,time_a
 			search_path_X.append(startx)
 			search_path_Y.append(starty)
 			#To get probability from XY coordinate in dataframe (from pandas)
-			probability_xy = cord_prob[((cord_prob['Xcoordinate'] == startx) & (cord_prob['Ycoordinate'] == starty))].iat[0,0]
-			starty += 1
-			final_prob += probability_xy
 			time_arr.append(time)
-			time += 1	
+			probability_xy = cord_prob[((cord_prob['Xcoordinate'] == startx) & (cord_prob['Ycoordinate'] == starty))].iat[0,0]
+			final_prob += probability_xy
 			final_prob_arr.append(final_prob)
-
-
-			# plt.scatter(startx,starty)
-			# plt.show()
-			# plt.pause(0.0001)
+			starty += 1
+			time += 1	
 		starty -= 1
 		startx += 1
 		up = False
@@ -118,15 +115,12 @@ def search_path(startx,starty,up,cord_prob,time,final_prob,final_prob_arr,time_a
 		while(starty >= Ymin):
 			search_path_X.append(startx)
 			search_path_Y.append(starty)
-			probability_xy = cord_prob[((cord_prob['Xcoordinate'] == startx) & (cord_prob['Ycoordinate'] == starty))].iat[0,0]
-			starty -= 1
-			final_prob += probability_xy
 			time_arr.append(time)
-			time += 1
+			probability_xy = cord_prob[((cord_prob['Xcoordinate'] == startx) & (cord_prob['Ycoordinate'] == starty))].iat[0,0]
+			final_prob += probability_xy
 			final_prob_arr.append(final_prob)
-			# plt.scatter(startx,starty)
-			# plt.show()
-			# plt.pause(0.0001)
+			starty -= 1
+			time += 1
 		starty += 1
 		startx += 1
 		up = True
@@ -158,20 +152,13 @@ plt.xlabel('Flight time')
 plt.ylabel('CDP')
 plt.suptitle('CDP v.s. Time')
 
-# plt.show()
+plt.show()
 
- 
-# plt.plot(time_arr,final_prob_arr)
-# plt.xlabel('Flight time')
-# plt.ylabel('CDP')
-# plt.suptitle('CDP v.s. Time')
-# plt.grid()
-# plt.show(block=True)
 
 np.savetxt("finalProb.txt",final_prob_arr,fmt='%.6f')
 #################################################
 
-
+print(final_prob_arr[100])
 ##################Efficiency EB #####################
 
 # 1. Nr is probability at 100 200 300 600 900
@@ -179,14 +166,16 @@ np.savetxt("finalProb.txt",final_prob_arr,fmt='%.6f')
 # 3. d is the distance from 0,0 to the closest point of non zero probability
 
 # CDP at T=100 :
-T_arr = [100 , 200, 300, 600, 900]
+# initial_time = int((Xmin**2+Ymin**2)**0.5)
+T_arr=[100 , 200, 300, 600, 900]
+# T_arr[:] = [x - initial_time for x in T_arr]
 
 Numerator_arr = [] 
 
 for i in range(len(T_arr)):
 	Numerator_arr.append(final_prob_arr[T_arr[i]])
 print("Numerator is: ",Numerator_arr)
-
+print(final_prob_arr[100])
 # finding d
 euc_dist_arr =[]
 
