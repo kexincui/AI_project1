@@ -5,7 +5,7 @@ import numpy
 import pandas as pd
 from pandas import DataFrame  
 # Load data from CSV
-dat = np.genfromtxt('heatmap_1.txt', delimiter=' ',skip_header=0)
+dat = np.genfromtxt('heatmap_2.txt', delimiter=' ',skip_header=0)
 X_dat = dat[:,0]
 Y_dat = dat[:,1]
 Z_dat = dat[:,2]
@@ -65,6 +65,7 @@ X = np.array(X)
 Y = np.array(Y)
 xycoordinates = np.column_stack((X, Y))
 xy_p = np.column_stack((xycoordinates, Z))
+nonzero_xycoordinates = np.column_stack((nonzeroCoor_X, nonzeroCoor_Y))
 
 cord_prob = pd.DataFrame(
     {'Xcoordinate': X,
@@ -74,11 +75,13 @@ cord_prob = pd.DataFrame(
 
 ##################Search Algorithm and CDP #####################
 
-final_prob=0
-time = 0
+final_prob = 0
 
-final_prob_arr = []
-time_arr =[]
+final_prob_arr = [0]
+time_arr =[0]
+
+time = int((Xmin**2+Ymin**2)**0.5)
+print("time is :",time)
 
 search_path_X = [0]
 search_path_Y = [0]
@@ -100,9 +103,10 @@ def search_path(startx,starty,up,cord_prob,time,final_prob,final_prob_arr,time_a
 			probability_xy = cord_prob[((cord_prob['Xcoordinate'] == startx) & (cord_prob['Ycoordinate'] == starty))].iat[0,0]
 			starty += 1
 			final_prob += probability_xy
-			time += 1
-			final_prob_arr.append(final_prob)
 			time_arr.append(time)
+			time += 1	
+			final_prob_arr.append(final_prob)
+
 
 			# plt.scatter(startx,starty)
 			# plt.show()
@@ -117,9 +121,9 @@ def search_path(startx,starty,up,cord_prob,time,final_prob,final_prob_arr,time_a
 			probability_xy = cord_prob[((cord_prob['Xcoordinate'] == startx) & (cord_prob['Ycoordinate'] == starty))].iat[0,0]
 			starty -= 1
 			final_prob += probability_xy
+			time_arr.append(time)
 			time += 1
 			final_prob_arr.append(final_prob)
-			time_arr.append(time)
 			# plt.scatter(startx,starty)
 			# plt.show()
 			# plt.pause(0.0001)
@@ -154,7 +158,7 @@ plt.xlabel('Flight time')
 plt.ylabel('CDP')
 plt.suptitle('CDP v.s. Time')
 
-plt.show()
+# plt.show()
 
  
 # plt.plot(time_arr,final_prob_arr)
@@ -166,3 +170,63 @@ plt.show()
 
 np.savetxt("finalProb.txt",final_prob_arr,fmt='%.6f')
 #################################################
+
+
+##################Efficiency EB #####################
+
+# 1. Nr is probability at 100 200 300 600 900
+# 2. Sort initial heat map in descending order of probability 
+# 3. d is the distance from 0,0 to the closest point of non zero probability
+
+# CDP at T=100 :
+T_arr = [100 , 200, 300, 600, 900]
+
+Numerator_arr = [] 
+
+for i in range(len(T_arr)):
+	Numerator_arr.append(final_prob_arr[T_arr[i]])
+print("Numerator is: ",Numerator_arr)
+
+# finding d
+euc_dist_arr =[]
+
+for i in range(len(nonzero_xycoordinates)):
+	euc_dist_arr.append(((nonzero_xycoordinates[i][0]**2 + nonzero_xycoordinates[i][1]**2))**0.5)
+
+d = int(min(euc_dist_arr))
+
+
+# finding T+1-d (upper_limit)
+upper_limit_arr =[]
+
+for i in range(len(T_arr)):
+	upper_limit_arr.append(T_arr[i]+1-d)
+
+# Sorting the probabilities in descending order(z in descending)
+Z_rev=np.sort(Z)[::-1]
+
+denominator = 0
+denominator_arr=[]
+
+for j in range(len(upper_limit_arr)):
+	for i in range(1,upper_limit_arr[j]+1):
+		denominator += Z_rev[i]
+	denominator_arr.append(denominator)
+	denominator = 0
+
+# for i in range (1,upper_limit_arr[1]+1):
+# 	denominator += Z_rev[i]
+# denominator_arr.append(denominator)
+
+print("Denominator is: ",denominator_arr)
+
+Efficiency_arr = []
+
+for i in range(len(Numerator_arr)):
+	Efficiency_arr.append(Numerator_arr[i]/denominator_arr[i])
+
+print("Efficiency is: ",Efficiency_arr)
+cdp_time = np.column_stack((time_arr, final_prob_arr))
+np.savetxt("cdp_time.txt",cdp_time,fmt='%.6f')
+
+# print(Efficiency_arr)
