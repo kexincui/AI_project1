@@ -5,7 +5,7 @@ import numpy
 import pandas as pd
 from pandas import DataFrame  
 # Load data from CSV
-dat = np.genfromtxt('heatmap_2.txt', delimiter=' ',skip_header=0)
+dat = np.genfromtxt('heatmap_1.txt', delimiter=' ',skip_header=0)
 X_dat = dat[:,0]
 Y_dat = dat[:,1]
 Z_dat = dat[:,2]
@@ -16,7 +16,6 @@ for i in range(len(X_dat)):
         X = np.append(X,X_dat[i])
         Y = np.append(Y,Y_dat[i])
         Z = np.append(Z,Z_dat[i])
-
 
 
 ##################HEAT MAP#####################
@@ -33,10 +32,9 @@ zi = griddata((X, Y), Z, (xi[None,:], yi[:,None]), method='nearest')
 # plt.show()
 #################################################
 
-
 ##################Bounding Area#####################
 
-#finding Xmin . where X,Y,Z are the points and probability resp
+#finding Xmin . where X,Y,Z are the points and probability respectively
 nonzeroCoor_X = []
 nonzeroCoor_Y = []
 nonzeroProb_Z = []
@@ -139,6 +137,32 @@ final_search_path = np.column_stack((search_path_X, search_path_Y))
 
 search_path_XY = np.column_stack((search_path_X, search_path_Y))
 
-plt.scatter(time_arr,final_prob_arr)
-plt.show(block=True)
+# np.savetxt("heatmap1_path.txt",search_path_XY,fmt='%.1f')
+np.savetxt("heatmap2_path.txt",search_path_XY,fmt='%.1f')
+
+fig1 = plt.figure()
+fig2 = plt.figure()
+
+ax1 = fig1.add_subplot(111)
+ax2 = fig2.add_subplot(111)
+
+ax1.contourf(xi, yi, zi, 15, cmap=plt.cm.rainbow)
+# fig1.colorbar()
+ax2.plot(time_arr,final_prob_arr)
+ax2.grid()
+plt.xlabel('Flight time')
+plt.ylabel('CDP')
+plt.suptitle('CDP v.s. Time')
+
+plt.show()
+
+ 
+# plt.plot(time_arr,final_prob_arr)
+# plt.xlabel('Flight time')
+# plt.ylabel('CDP')
+# plt.suptitle('CDP v.s. Time')
+# plt.grid()
+# plt.show(block=True)
+
+np.savetxt("finalProb.txt",final_prob_arr,fmt='%.6f')
 #################################################
